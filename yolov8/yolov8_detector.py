@@ -84,7 +84,7 @@ class YoloV8Detector:
         if not classes and class_labels:
             classes = self.labels2ids(class_labels)
 
-        pred = self.model.predict(img, classes=classes)
+        pred = self.model.predict(img, classes=classes, iou_thresh=iou_thresh, conf=thresh)
         det = pred[0].cpu()
         boxes = []
         confidences = []
