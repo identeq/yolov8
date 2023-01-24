@@ -25,6 +25,7 @@ def plot_one_box(x, img, color=None, label=None, line_thickness=3):
 
 
 def detect_and_plot(model, _image):
+    # targets = None
     targets = ['car', 'motorcycle', 'truck', 'bus']
     detections = model.detect(_image, class_labels=targets)
     for detection in detections:
@@ -35,7 +36,7 @@ def detect_and_plot(model, _image):
 
 def video_example():
     import time
-    yoloV8 = YoloV8Detector(model_name="yolov8s.pt")
+    yoloV8 = YoloV8Detector(model_name="yolov8l.pt")
     url = "https://storage.googleapis.com/identeq/identeq_demo/VID_20220523_085255.mp4"
     cap = cv2.VideoCapture(url)
     assert cap.isOpened(), f'Failed to open {url}'
