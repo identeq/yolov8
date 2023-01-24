@@ -6,7 +6,6 @@
 import random
 from typing import List
 
-import cv2
 import numpy as np
 import torch
 
@@ -83,14 +82,13 @@ class YoloV8Detector:
 
         if not classes and class_labels:
             classes = self.labels2ids(class_labels)
-
-        pred = self.model.predict(img, classes=classes, iou_thresh=iou_thresh, conf=thresh, agnostic=agnostic)
-        det = pred[0].cpu()
+        pred = self.model.predict(img, conf=thresh, iou=iou_thresh, classes=classes)[0]
+        det = pred.boxes.boxes
         boxes = []
         confidences = []
         class_ids = []
         if len(pred) > 0:
-            for *xyxy, conf, cls in reversed(det.boxes.boxes):
+            for *xyxy, conf, cls in reversed(det):
                 t, l, b, r = np.array(xyxy).astype(int)
                 boxes.append([t, l, b, r])
                 confidences.append(float(conf))
@@ -103,12 +101,3 @@ class YoloV8Detector:
 
     def labels2ids(self, labels: List[str]):
         return [self._labels2ids[label] for label in labels]
-
-
-if __name__ == '__main__':
-    targets = None
-    # targets = ['car', 'motorcycle', 'truck', 'bus']
-    image_pth = "/home/dell/Downloads/manish_test.jpeg"
-    image = cv2.imread(image_pth)
-    detector = YoloV8Detector()
-    detector.detect(image, class_labels=targets)
