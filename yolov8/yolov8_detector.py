@@ -69,8 +69,8 @@ def _postprocess(boxes, scores, classes, labels, img_w, img_h):
 
 class YoloV8Detector:
 
-    def __init__(self, model_path="yolov8n.pt"):
-        self.model = YOLO(model_path)
+    def __init__(self, model_name="yolov8n.pt"):
+        self.model = YOLO(model_name)
         self._id2labels = self.model.module.names if hasattr(self.model, 'module') else self.model.names
         self._labels2ids = dict((_label, _id) for _id, _label in self._id2labels.items())
         self.labels = list(self._labels2ids.keys())
