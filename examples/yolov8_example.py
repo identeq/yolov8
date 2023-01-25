@@ -36,7 +36,7 @@ def detect_and_plot(model, _image):
 
 def video_example():
     import time
-    yoloV8 = YoloV8Detector(model_name="yolov8l.pt")
+    yoloV8 = YoloV8Detector(model_name="yolov8l.pt", img_size=320)  # default img_size=640
     url = "https://storage.googleapis.com/identeq/identeq_demo/VID_20220523_085255.mp4"
     cap = cv2.VideoCapture(url)
     assert cap.isOpened(), f'Failed to open {url}'
