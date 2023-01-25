@@ -8,6 +8,7 @@ from typing import List
 
 import numpy as np
 import torch
+from ultralytics.yolo.utils.torch_utils import select_device
 
 from ultralytics import YOLO
 
@@ -68,8 +69,10 @@ def _postprocess(boxes, scores, classes, labels, img_w, img_h):
 
 class YoloV8Detector:
 
-    def __init__(self, model_name="yolov8n.pt"):
+    def __init__(self, model_name="yolov8n.pt", img_size=640, device=''):
         self.model = YOLO(model_name)
+        self.device = select_device(device=device)
+        self.img_size = img_size
         self._id2labels = self.model.module.names if hasattr(self.model, 'module') else self.model.names
         self._labels2ids = dict((_label, _id) for _id, _label in self._id2labels.items())
         self.labels = list(self._labels2ids.keys())
@@ -82,7 +85,8 @@ class YoloV8Detector:
 
         if not classes and class_labels:
             classes = self.labels2ids(class_labels)
-        pred = self.model.predict(img, conf=thresh, iou=iou_thresh, classes=classes)[0]
+        pred = self.model.predict(img, conf=thresh, iou=iou_thresh, classes=classes, agnostic_nms=agnostic,
+                                  imgsz=self.img_size, device=self.device)[0]
         det = pred.boxes.boxes
         boxes = []
         confidences = []
